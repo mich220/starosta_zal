@@ -1,0 +1,28 @@
+2.
+
+SELECT `firstName`,`lastName`, o.country, COUNT(c.customerNumber) as customer_count  FROM `employees` e
+INNER JOIN `offices` o ON e.`officeCode` = o.`officeCode`
+INNER JOIN `customers` c ON e.`employeeNumber` = c.salesRepEmployeeNumber
+GROUP BY 1,2,3
+
+4.
+
+a)
+SELECT p.productName, YEAR(ord.orderDate) AS order_year, COUNT(od.orderNumber) AS order_count FROM `products` p
+INNER JOIN `orderdetails` od ON od.productCode = p.`productCode`
+INNER JOIN `orders` ord ON ord.orderNumber = od.orderNumber
+WHERE p.productName LIKE "%1969 Harley Davidson%"
+GROUP BY p.productName, YEAR(ord.orderDate)
+
+b)
+SELECT p.productName, YEAR(ord.orderDate) AS order_year, SUM(IFNULL(od.`priceEach`, 0)) AS orders_price FROM `products` p
+INNER JOIN `orderdetails` od ON od.productCode = p.`productCode`
+INNER JOIN `orders` ord ON ord.orderNumber = od.orderNumber
+WHERE p.productName LIKE "%1969 Harley Davidson%"
+GROUP BY p.productName, YEAR(ord.orderDate)
+
+c)
+SELECT pl.productLine, COUNT(pr.`productCode`) as product_count FROM `productlines` pl
+INNER JOIN `products` pr ON pl.productLine = pr.`productLine`
+GROUP BY pl.productLine
+HAVING COUNT(pr.`productCode`) > 10
