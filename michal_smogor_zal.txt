@@ -1,28 +1,32 @@
-2.
+A
+SELECT 
+    productName,
+    YEAR(ord.orderDate),
+    count(ord.orderDate)
+FROM
+    products p
+INNER JOIN orderdetails o ON p.productCode = o.productCode
+INNER JOIN orders ord on o.orderNumber = ord.orderNumber
+WHERE p.productName LIKE "%1952 Alpine Renault 1300%"
+OR p.productName LIKE "%1968 Ford Mustang%"
+OR p.productName LIKE "%1996 Moto Guzzi 1100i%"
+GROUP BY productName, YEAR(ord.orderDate)
 
-SELECT `firstName`,`lastName`, o.country, COUNT(c.customerNumber) as customer_count  FROM `employees` e
-INNER JOIN `offices` o ON e.`officeCode` = o.`officeCode`
-INNER JOIN `customers` c ON e.`employeeNumber` = c.salesRepEmployeeNumber
-GROUP BY 1,2,3
+B
+SELECT
+YEAR(orderDate),
+MONTH(orderDate),
+SUM(quantityordered*priceeach) as suma
+FROM orderdetails
+JOIN products on orderdetails.productCode = products.productCode
+JOIN orders on orderdetails.orderNumber = orders.orderNumber
+where productName like "%Harley%"
+WHERE by 1,2
+ORDER BY YEAR(orderDate), MONTH(orderDate)
 
-4.
 
-a)
-SELECT p.productName, YEAR(ord.orderDate) AS order_year, COUNT(od.orderNumber) AS order_count FROM `products` p
-INNER JOIN `orderdetails` od ON od.productCode = p.`productCode`
-INNER JOIN `orders` ord ON ord.orderNumber = od.orderNumber
-WHERE p.productName LIKE "%1969 Harley Davidson%"
-GROUP BY p.productName, YEAR(ord.orderDate)
-
-b)
-SELECT p.productName, YEAR(ord.orderDate) AS order_year, SUM(IFNULL(od.`priceEach`, 0)) AS orders_price FROM `products` p
-INNER JOIN `orderdetails` od ON od.productCode = p.`productCode`
-INNER JOIN `orders` ord ON ord.orderNumber = od.orderNumber
-WHERE p.productName LIKE "%1969 Harley Davidson%"
-GROUP BY p.productName, YEAR(ord.orderDate)
-
-c)
-SELECT pl.productLine, COUNT(pr.`productCode`) as product_count FROM `productlines` pl
-INNER JOIN `products` pr ON pl.productLine = pr.`productLine`
-GROUP BY pl.productLine
-HAVING COUNT(pr.`productCode`) > 10
+C
+SELECT pl.productLine, count(prod.productCode) FROM productlines pl
+INNER JOIN products prod ON pl.productLine = prod.productLine
+GROUP BY 1
+HAVING COUNT(prod.productCode) BETWEEN 11 AND 20
